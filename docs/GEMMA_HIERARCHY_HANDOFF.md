@@ -45,6 +45,7 @@ results/gemma2-9b-layer27-1m-residpost-top150/
   strict_feature_classes/
   activation_pattern_clusters/
   relation_nested_classes/
+  six_expert_labels/
 ```
 
 `doc_features_rank*.npy` 是原始 document-feature 稀疏激活文件，体积较大，保留在阿里云共享目录中，不提交到 GitHub。它们是后处理和聚类的输入。
@@ -264,19 +265,16 @@ results/gemma2-9b-layer27-1m-residpost-top150/relation_nested_classes/joint_rela
 docs/GEMMA_TWO_LEVEL_MOE_PLAN_V1.md
 ```
 
-该方案固定了 7 个专家、指定分发/学习分发/强制混合三种路由、宽度扫描、训练步数、验证集、NMSE、有效维度和单 feature 诊断。文档明确说明：45 次正式训练尚未运行，当前仓库中的结果属于主实验的前置数据和标签。
-<<<<<<< HEAD
-=======
+该方案固定了 6 个专家（B0、B2、T00、T01、T20、T21），指定分发/学习分发/强制混合三种路由、宽度扫描、训练步数、验证集、NMSE、有效维度和单 feature 诊断。B1 被主动排除，因为它没有需要保留的顶层路径。文档明确说明：45 次正式训练尚未运行，当前仓库中的结果属于主实验的前置数据和标签。
 
->>>>>>> 96fdc04019e987723215860db5b53f84b2f1ebf8
-
-
-## 主实验计划
-
-前面的 CAR、SAE activation 和 feature class 结果是主实验的输入。两层 MoE 的正式训练方案见：
+六 expert 的可直接采样标签和合法边：
 
 ```text
-docs/GEMMA_TWO_LEVEL_MOE_PLAN_V1.md
+results/gemma2-9b-layer27-1m-residpost-top150/six_expert_labels/expert_manifest.json
+results/gemma2-9b-layer27-1m-residpost-top150/six_expert_labels/bottom_labels.csv
+results/gemma2-9b-layer27-1m-residpost-top150/six_expert_labels/top_labels.csv
+results/gemma2-9b-layer27-1m-residpost-top150/six_expert_labels/valid_edges.csv
 ```
 
-该方案固定了 7 个专家、指定分发/学习分发/强制混合三种路由、宽度扫描、训练步数、验证集、NMSE、有效维度和单 feature 诊断。文档明确说明：45 次正式训练尚未运行，当前仓库中的结果属于主实验的前置数据和标签。
+采样时只从 `valid_edges.csv` 中取 bottom–top feature pair，不要独立随机组合两个没有 CAR 边的 feature。
+
