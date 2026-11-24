@@ -1,0 +1,20 @@
+{
+  "documents": 4248,
+  "active_features": 67839,
+  "accepted_composites": 14208,
+  "edges": 110524,
+  "max_depth": 1,
+  "minimum_count": 50,
+  "legacy_parameters": {
+    "out": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A",
+    "minimum_count": 50,
+    "containment": 0.85,
+    "reverse": 0.85,
+    "frequency_ratio": 1.1,
+    "joint_containment": 0.75,
+    "minimum_constituents": 2,
+    "maximum_constituents": 8,
+    "max_base_candidates": 4096
+  },
+  "elapsed_s": 493.46843457221985
+}
