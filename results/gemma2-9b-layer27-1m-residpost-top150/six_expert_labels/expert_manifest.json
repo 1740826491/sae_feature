@@ -1,0 +1,15 @@
+{
+  "experts": [
+    "B0",
+    "B2",
+    "T00",
+    "T01",
+    "T20",
+    "T21"
+  ],
+  "dropped_bottom_expert": "B1",
+  "bottom_feature_count": 1055,
+  "top_feature_count": 14208,
+  "valid_edge_count": 110520,
+  "sampling_rule": "sample only from valid_edges.csv; never independently pair unrelated features"
+}
