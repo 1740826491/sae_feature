@@ -1,0 +1,12 @@
+{
+  "method": "exact identical constituent signature",
+  "source": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A/car_exact_edges.csv",
+  "repeated_classes": 3,
+  "all_signatures": 930,
+  "active_high_features": 14208,
+  "largest_class_composites": 13277,
+  "outputs": [
+    "strict_class_members.csv",
+    "strict_class_summary.csv"
+  ]
+}
