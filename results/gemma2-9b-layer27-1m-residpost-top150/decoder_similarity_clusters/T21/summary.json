@@ -1,0 +1,65 @@
+{
+  "feature_count": 5280,
+  "results": {
+    "2": {
+      "inertia": 5234.26611328125,
+      "sizes": [
+        2816,
+        2464
+      ],
+      "mean_cosine_to_own_center": 0.09043548256158829,
+      "min_cosine_to_own_center": -0.08288520574569702,
+      "center_cosine_matrix": [
+        [
+          0.9999998807907104,
+          -0.2916041910648346
+        ],
+        [
+          -0.2916041910648346,
+          0.9999999403953552
+        ]
+      ],
+      "labels": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A/decoder_similarity_clusters/T21/labels_k2.csv",
+      "centers": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A/decoder_similarity_clusters/T21/centers_k2.npy"
+    },
+    "4": {
+      "inertia": 5191.7109375,
+      "sizes": [
+        2638,
+        1578,
+        635,
+        429
+      ],
+      "mean_cosine_to_own_center": 0.11496482789516449,
+      "min_cosine_to_own_center": -0.1130654588341713,
+      "center_cosine_matrix": [
+        [
+          1.0,
+          -0.15607289969921112,
+          -0.17519481480121613,
+          0.11777801811695099
+        ],
+        [
+          -0.15607289969921112,
+          1.0000001192092896,
+          -0.10353948920965195,
+          0.20517773926258087
+        ],
+        [
+          -0.17519481480121613,
+          -0.10353948920965195,
+          1.0,
+          -0.1701427698135376
+        ],
+        [
+          0.11777801811695099,
+          0.20517773926258087,
+          -0.1701427698135376,
+          0.9999999403953552
+        ]
+      ],
+      "labels": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A/decoder_similarity_clusters/T21/labels_k4.csv",
+      "centers": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_residpost_top150_car_A/decoder_similarity_clusters/T21/centers_k4.npy"
+    }
+  }
+}
