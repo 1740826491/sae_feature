@@ -1,0 +1,26 @@
+{
+  "method": "CAR parent mapping + document activation-pattern clustering",
+  "documents": 4248,
+  "bottom_features": 1056,
+  "top_features": 14208,
+  "bottom_k": 3,
+  "top_sub_k": 2,
+  "top_group_summaries": [
+    {
+      "bottom_cluster": 0,
+      "subclusters": 2,
+      "sizes": [
+        1,
+        2
+      ]
+    },
+    {
+      "bottom_cluster": 2,
+      "subclusters": 2,
+      "sizes": [
+        8925,
+        5280
+      ]
+    }
+  ]
+}
