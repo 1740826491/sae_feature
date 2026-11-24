@@ -40,6 +40,7 @@ class Data:
                 assert group
                 self.pools.append(np.arange(len(ids), len(ids) + len(group)))
                 ids.extend(group)
+        self.feature_ids = np.asarray(ids)
         raw = decoder[ids].astype('float32')
         raw /= np.linalg.norm(raw, axis=1, keepdims=True)
         dim = raw.shape[1]
@@ -56,7 +57,7 @@ class Data:
             raw = raw @ proj * math.sqrt(dim/width)
         self.inputs = tensor(raw)
 
-    def batch(self, rng):
+    def batch(self, rng, component=None):
         p = 2*self.k
         pairs = np.tile(np.arange(p*p), BATCH//(p*p))
         rng.shuffle(pairs)
@@ -69,6 +70,8 @@ class Data:
                 ids[mask, side] = rng.choice(self.pools[g], mask.sum())
         ids, groups = tensor(ids), tensor(groups)
         amp = tensor(rng.uniform(.5, 1.5, (BATCH, 2, 1)).astype('float32'))
+        if component is not None:
+            amp[:, 1-component] = 0
         x = (self.inputs[ids] * amp).sum(1)
         z = self.latent[ids] * amp
         y = ((z + .1*z.tanh()).unsqueeze(-2) @ self.outputs[groups]).squeeze(-2).sum(1)/math.sqrt(8)
@@ -197,6 +200,7 @@ if __name__ == '__main__':
     parser.add_argument('--workers',type=int,default=1)
     parser.add_argument('--steps',type=int,default=6000)
     parser.add_argument('--eval-batches',type=int,default=128)
+    parser.add_argument('--matched-dense',action='store_true')
     parser.add_argument('--smoke',action='store_true')
     parser.add_argument('--width-factor', type=int, choices=(1,2), default=1)
     args = parser.parse_args()
@@ -205,6 +209,8 @@ if __name__ == '__main__':
     modes = ('specified','learned','mixed','dense_half','dense_full')
     if args.width_factor == 2:
         modes = modes[:3]  # Reuse the existing paired Dense controls.
+    if args.matched_dense:
+        modes = ('dense_matched',)
     cells = [(k,m,s) for s,k,m in itertools.product((11,22,33),(2,4),modes)]
     if args.smoke:
         cells = [(k,m,11) for k in (2,4) for m in modes]
