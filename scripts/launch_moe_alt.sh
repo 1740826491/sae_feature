@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd /mnt/workspace/Hrj/gemma_hierarchy/k_sweep_1124a
+export OPENBLAS_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export PPU_SDK=/usr/local/PPU_SDK
+export PPU_HOME=/usr/local/PPU_SDK
+
+OUT=formal_alt_1124
+mkdir -p "$OUT"
+pids=()
+for worker in {0..7}; do
+  CUDA_VISIBLE_DEVICES="$worker" python -u run_moe_sweep_new.py \
+    --worker "$worker" --workers 8 --out "$OUT" \
+    > "formal_alt_worker_${worker}.log" 2>&1 &
+  pids+=("$!")
+done
+
+status=0
+for pid in "${pids[@]}"; do
+  wait "$pid" || status=1
+done
+printf 'FINAL_STATUS=%s\n' "$status"
+exit "$status"
