@@ -256,3 +256,27 @@ results/gemma2-9b-layer27-1m-residpost-top150/relation_nested_classes/joint_rela
 
 后续生成数据时，可以按 `class_id` 选择一个完整的底层—顶层 feature group。
 
+## 主实验计划
+
+前面的 CAR、SAE activation 和 feature class 结果是主实验的输入。两层 MoE 的正式训练方案见：
+
+```text
+docs/GEMMA_TWO_LEVEL_MOE_PLAN_V1.md
+```
+
+该方案固定了 7 个专家、指定分发/学习分发/强制混合三种路由、宽度扫描、训练步数、验证集、NMSE、有效维度和单 feature 诊断。文档明确说明：45 次正式训练尚未运行，当前仓库中的结果属于主实验的前置数据和标签。
+<<<<<<< HEAD
+=======
+
+>>>>>>> 96fdc04019e987723215860db5b53f84b2f1ebf8
+
+
+## 主实验计划
+
+前面的 CAR、SAE activation 和 feature class 结果是主实验的输入。两层 MoE 的正式训练方案见：
+
+```text
+docs/GEMMA_TWO_LEVEL_MOE_PLAN_V1.md
+```
+
+该方案固定了 7 个专家、指定分发/学习分发/强制混合三种路由、宽度扫描、训练步数、验证集、NMSE、有效维度和单 feature 诊断。文档明确说明：45 次正式训练尚未运行，当前仓库中的结果属于主实验的前置数据和标签。
