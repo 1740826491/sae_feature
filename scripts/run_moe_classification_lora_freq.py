@@ -112,6 +112,8 @@ class Student(nn.Module):
         route = mixed if self.mode == 'mixed' else groups
         if self.gate is not None:
             gl = self.gate(x); route = gl.topk(2, 1).indices; prob = gl.softmax(1)
+        if self.mode == 'random':
+            route = torch.rand(len(x), self.n, device=x.device).topk(2, 1).indices
         out = x.new_zeros(len(x), self.classes); hdim = self.moe.enc_b.shape[1]; blocks = torch.zeros(len(x), self.n * hdim, device=x.device, dtype=x.dtype) if capture else None
         for i in range(self.n):
             rows = (route == i).any(1).nonzero().flatten()
@@ -143,7 +145,7 @@ def run(cell, decoder, args):
     k, mode, seed = cell; out = args.out / f'k{k}_{mode}_{seed}'; out.mkdir(parents=True, exist_ok=True)
     if (out / 'result.json').exists(): return
     hidden = {'dense_full': INPUT_DIM, 'dense_half': 1792, 'dense_budget': max(64, INPUT_DIM // (3 * k))}.get(mode, INPUT_DIM)
-    rank = {2: 8, 4: 4}[k]; data = Data(k, decoder); rng = np.random.default_rng(seed); torch.manual_seed(seed); model = Student(k, mode, hidden, rank).to(DEVICE)
+    rank = max(1, 16 // k); data = Data(k, decoder); rng = np.random.default_rng(seed); torch.manual_seed(seed); model = Student(k, mode, hidden, rank).to(DEVICE)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0); best = float('inf'); best_state = None; elapsed = 0.
     with (out / 'curve.jsonl').open('w', buffering=1) as log:
         for step in range(1, args.steps + 1):
@@ -152,14 +154,17 @@ def run(cell, decoder, args):
                 val = evaluate(model, data, 8101, args.eval_batches); val['step'], val['seconds'] = step, elapsed; print(json.dumps(val), file=log)
                 score = float(np.mean(val['cross_entropy']))
                 if score < best: best, best_state = score, {n: v.detach().cpu() for n, v in model.state_dict().items()}
-    torch.save(best_state, out / 'best.pt'); model.load_state_dict(best_state); test = evaluate(model, data, 8102, args.eval_batches, True)
+    torch.save(best_state, out / 'best.pt'); model.load_state_dict(best_state)
+    # Full covariance is disabled for K>=8: the concatenated expert
+    # representation is too wide for a dense Gram matrix on a 96GB card.
+    test = evaluate(model, data, 8102, args.eval_batches, k <= 4)
     (out / 'result.json').write_text(json.dumps({'k': k, 'mode': mode, 'seed': seed, 'input_dim': INPUT_DIM, 'hidden': hidden, 'lora_rank': None if mode.startswith('dense') else rank, 'steps': args.steps, 'test': test, 'train_seconds': elapsed, 'frequency_split': 'bottom/top quartiles within selected pools', 'teacher_mapping': 'independent mapping per B2/T20/T21 cluster'}, indent=2))
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('--out', type=Path, required=True); ap.add_argument('--worker', type=int, default=0); ap.add_argument('--workers', type=int, default=1); ap.add_argument('--steps', type=int, default=6000); ap.add_argument('--eval-batches', type=int, default=128); ap.add_argument('--lr', type=float, default=.001); ap.add_argument('--smoke', action='store_true'); args = ap.parse_args(); torch.set_num_threads(1)
-    modes = ('specified', 'learned', 'mixed', 'dense_full', 'dense_half', 'dense_budget'); cells = [(k, m, s) for s, k, m in itertools.product((11, 22, 33), (2, 4), modes)]
-    if args.smoke: cells = [(k, m, 11) for k in (2, 4) for m in modes]
+    modes = ('specified', 'random', 'dense_full'); cells = [(k, m, s) for s, k, m in itertools.product((11, 22, 33), (2, 4, 8, 16), modes)]
+    if args.smoke: cells = [(k, m, 11) for k in (2, 4, 8, 16) for m in modes]
     with np.load(SAE) as z: decoder = z['W_dec']
     if decoder.shape[1] != INPUT_DIM: raise ValueError(decoder.shape)
     for cell in cells[args.worker::args.workers]: run(cell, decoder, args)
