@@ -116,6 +116,8 @@ def main():
     ap.add_argument('--square-output',action='store_true')
     ap.add_argument('--capacity-curve',action='store_true')
     ap.add_argument('--smoke',action='store_true')
+    ap.add_argument('--optimizer',choices=('adamw','sgd'),default='adamw')
+    ap.add_argument('--lr',type=float,default=.001)
     ap.add_argument('--out',type=Path,required=True)
     a=ap.parse_args()
     with np.load(SAE) as z:
@@ -147,7 +149,10 @@ def main():
         rng=np.random.default_rng(seed)
         torch.manual_seed(seed)
         model=Model(d,r,mode,D if a.square_output else P).cuda()
-        opt=torch.optim.AdamW(model.parameters(),lr=.001,weight_decay=0)
+        if a.optimizer == 'sgd':
+            opt=torch.optim.SGD(model.parameters(),lr=a.lr)
+        else:
+            opt=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=0)
         steps=2 if a.smoke else 6000
         with (folder/'curve.jsonl').open('w',buffering=1) as log:
             for step in range(1,steps+1):
@@ -163,7 +168,7 @@ def main():
         scores=evaluate(task,model,d,lam,8102,1 if a.smoke else 128)
         torch.save(model.state_dict(),folder/'final.pt')
         tmp=folder/'result.tmp'
-        tmp.write_text(json.dumps(dict(step=steps,params=sum(p.numel() for p in model.parameters()),**scores)))
+        tmp.write_text(json.dumps(dict(step=steps,params=sum(p.numel() for p in model.parameters()),optimizer=a.optimizer,lr=a.lr,**scores)))
         tmp.replace(folder/'result.json')
 
 
