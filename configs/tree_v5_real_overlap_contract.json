@@ -1,0 +1,49 @@
+{
+  "status": "implementation_in_progress",
+  "canonical_source": "/Users/suliuguang/Documents/GitHub/small_model/users/HengjieCao/code/train/tmoe.py",
+  "tree": {
+    "levels": 4,
+    "branching": [1, 2, 8, 16],
+    "shared_root": true,
+    "measured_overlaps_after_root": [0.4057347404, 0.2298932808, 0.1508672708]
+  },
+  "data": {
+    "input_directions": "Gemma-Scope SAE decoder directions",
+    "representation_dim": 3584,
+    "features_per_node": 128,
+    "active_features_per_level": 8,
+    "target": "one fixed canonical target per feature",
+    "amplitude": "signed Uniform[0.5,1.5]",
+    "routing": "one root-to-leaf path per sample"
+  },
+  "optimization": {
+    "exact_speed_stages": "population GD",
+    "per_expert_lr": "1/pi_e",
+    "steps": 1500,
+    "thresholds": [0.3, 0.1],
+    "seeds": [7, 8, 9],
+    "lr_grid": [0.25, 0.3536, 0.5, 0.7071, 1.0, 1.4142, 2.0, 2.8284, 4.0, 5.6569, 8.0, 11.3137, 16.0, 22.6274, 32.0, 45.2548, 64.0]
+  },
+  "processing_dimensions": [64, 128, 256, 358],
+  "methods": [
+    "dense_full_3584",
+    "tree_perfect",
+    "tree_independent_random",
+    "tree_learned_hierarchical",
+    "flat_topk_learned"
+  ],
+  "controls": {
+    "ideal_no_overlap": [0.0, 0.0, 0.0],
+    "real_overlap": [0.4057347404, 0.2298932808, 0.1508672708],
+    "random_assignment_overlap": [0.827406, 0.616472, 0.409054]
+  },
+  "required_outputs": [
+    "per_level_feature_error_curves",
+    "steps_to_threshold",
+    "weighted_total_error",
+    "routing_accuracy_and_alignment",
+    "total_and_active_parameters",
+    "flops_per_sample",
+    "resolved_config_and_coverage_manifest"
+  ]
+}
