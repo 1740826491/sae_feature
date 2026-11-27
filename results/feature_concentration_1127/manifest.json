@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "source_manifest": "/mnt/workspace/Hrj/gemma_hierarchy/results/dclm_1m_9b_hyper_doc_1125/document_routing_overlap_v2_main_1126/manifest.json",
+  "documents": 38231,
+  "test_documents": 5740,
+  "depths": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "assignment_configs": 108,
+  "analyzed_configs": 108,
+  "random_repeats": 20,
+  "reliable_min_test_events": 20,
+  "representative": {
+    "experts": 8,
+    "routing_dim": 32,
+    "split_seed": 42
+  },
+  "definitions": {
+    "purity": "max_e P(expert=e | feature activation)",
+    "local_frequency_lift": "max_e P(feature active | expert=e) / P(feature active)",
+    "random": "assignment-label permutation preserving exact expert loads",
+    "long_tail": "bottom test-frequency quartile among features with at least reliable_min_test_events"
+  }
+}

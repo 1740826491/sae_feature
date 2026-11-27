@@ -4,7 +4,9 @@ import argparse,json
 from pathlib import Path
 import numpy as np
 
-SETS={"ideal":[0,0],"real_max":[0.4057347404,0.4057347404],
+SETS={"ideal":[0,0],
+      "real_layerwise":[0.4057347404,0.2298932808],
+      "real_max":[0.4057347404,0.4057347404],
       "random_assignment":[0.827406,0.827406]}
 
 def main():
